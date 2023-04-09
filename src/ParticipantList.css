@@ -1,0 +1,28 @@
+.ParticipantList {
+  border-collapse: collapse;
+  margin-left: 40px;
+
+
+}
+
+.ParticipantList tr.current-user {
+  background-color: #e6f7ff;
+}
+
+.ParticipantList td {
+  padding: 5px;
+}
+
+.ParticipantList td:nth-child(2) {
+  text-align: right;
+}
+
+.ParticipantList .user-name {
+  margin-left: 5px;
+  margin-right: 7px;
+}
+
+.ParticipantList .user-estimation-placeholder {
+  font-style: italic;
+  color: #999;
+}

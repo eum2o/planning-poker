@@ -1,0 +1,39 @@
+.bg-lightgreen {
+  background-color: #c9ffc5;
+  font-size: 50px;
+}
+
+.bg-gray {
+    background-color: lightgray;
+  }
+
+.border-gray {
+  border-color: gray;
+}
+
+.rounded-circle {
+  width: 150px;
+  height: 150px;
+}
+
+.rounded-circle > div:first-child {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  padding: 0 10px;
+  font-size: 17px;
+}
+
+.card-subtitle {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  padding: 0 5px;
+  background-color: #ccc;
+  border-radius: 10px;
+  white-space: nowrap;
+}
