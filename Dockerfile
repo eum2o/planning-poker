@@ -1,20 +1,30 @@
 FROM node:19-alpine 
 
-# Set the working directory to /app
+# Create and change to the app directory.
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# Copying this separately prevents re-running npm install on every code change.
+COPY package*.json ./
 
-# Install dependencies (npm ci makes sure the exact versions in the lockfile gets installed)
-RUN npm ci 
-# Build the app
+# Install dependencies.
+RUN npm install --only=production
+RUN npm install -g serve
+
+# Copy local code to the container image.
+COPY . ./
+
+ARG REACT_APP_SERVER_HOSTNAME=localhost
+ENV REACT_APP_SERVER_HOSTNAME=$REACT_APP_SERVER_HOSTNAME
+
+# Build for production.
 RUN npm run build
 
-# Set the env to "production"
-ENV NODE_ENV production
-# Expose the port on which the app will be running (3000 is the default that `serve` uses)
-EXPOSE 3000 5000
+# Expose ports 3000 (react), 3001 (backend socket.io port), and 5000 (backend rest port).
+EXPOSE 3000
+EXPOSE 3001
+EXPOSE 5000
 
-# Start the server and the app
-CMD ["sh", "-c", "node server.js & npx serve build"]
+# Start the server.
+CMD ["sh", "-c", "serve -s build -l 3000 & node server.js"]

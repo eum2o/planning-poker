@@ -4,7 +4,11 @@ import io from "socket.io-client";
 import ParticipantList from "./ParticipantList";
 import ResetArea from "./ResetArea";
 import EstimationSummary from "./EstimationSummary";
-import { valueToButtonLabel, SERVER_URL, USERS_URL } from "./constants";
+import {
+  valueToButtonLabel,
+  SOCKETIO_SERVER_URL,
+  USERS_URL,
+} from "./constants";
 import "./estimationButtons.css";
 
 function App() {
@@ -42,7 +46,9 @@ function App() {
   }, []);
 
   useEffect(() => {
-    const socket = io(SERVER_URL);
+    const socket = io(SOCKETIO_SERVER_URL, {
+      agent: false,
+    });
     socket.on("dbUpdated", () => {
       updateUsers();
     });
@@ -61,17 +67,11 @@ function App() {
   const handleNameSubmit = (event) => {
     event.preventDefault();
     setUserNameSubmitted(true);
-    fetch(USERS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: userName }),
-    })
-      .then((res) => res.json())
-      .then((user) => {
-        setUsers((prevUsers) => [...prevUsers, user]);
-        event.target.reset();
-      })
-      .catch((error) => console.error(error));
+
+    axios.post(USERS_URL, { name: userName }).then((res) => {
+      setUsers((prevUsers) => [...prevUsers, res.data]);
+      event.target.reset();
+    });
   };
 
   const handleEstimationSubmit = (value) => {
@@ -99,7 +99,8 @@ function App() {
           <div>
             <div class="card mb-4">
               <div class="card-body">
-                Good to see you {userName}, oh wise estimator. Now take your guess:
+                Good to see you {userName}, oh wise estimator. Now take your
+                guess:
                 <div className="estimation-buttons">
                   {Object.entries(valueToButtonLabel).map(([key, value]) => (
                     <button

@@ -12,6 +12,7 @@ export const valueToButtonLabel = {
   "-4": "🍵",
 };
 
-export const SERVER_URL = "http://localhost:5000";
+export const SERVER_URL = `http://${process.env.REACT_APP_SERVER_HOSTNAME || 'localhost'}:5000`;
+export const SOCKETIO_SERVER_URL = `http://${process.env.REACT_APP_SERVER_HOSTNAME || 'localhost'}:3001`;
 export const USERS_URL = `${SERVER_URL}/api/users`;
 export const ESTIMATIONS_URL = `${SERVER_URL}/api/users/estimations`;
