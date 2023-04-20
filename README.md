@@ -61,6 +61,10 @@ To debug the `server.js` file with VS Code, you can use the following steps:
 5. Press the "Start Debugging" button (green arrow) or hit `F5`
 6. The server should start and pause on any set breakpoints
 
+## Contributing
+Contributions to this project are welcome! To get started, fork the repository, make changes, and submit a pull request. To work on an existing issue, feel free to assign yourself. For new bug reports or feature requests, please create a new issue.
+
+For more information on contributing to GitHub projects, please see https://docs.github.com/en/get-started/quickstart/contributing-to-projects. Your contributions are appreciated, and thank you for considering to collaborate with this project!
 
 ## Developer Hints
 The [server.js](server.js) manages the state of all users and estimations to ensure consistency among clients. Clients send updates to the server which runs with [Express](https://expressjs.com/) (port 5000), and receive server updates via [socket.io](https://socket.io/) (port 3001).
