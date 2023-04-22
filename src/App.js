@@ -12,10 +12,17 @@ import {
 import "./estimationButtons.css";
 
 function App() {
-  const [userName, setUserName] = useState("");
+
+  const [userName, setUserName] = useState(
+    sessionStorage.getItem("userName") || ""
+  );
+
   const [users, setUsers] = useState([]);
+
   const [estimation, setEstimation] = useState(null);
-  const [userNameSubmitted, setUserNameSubmitted] = useState(false);
+  const [userNameSubmitted, setUserNameSubmitted] = useState(
+    sessionStorage.getItem("userNameSubmitted") || false,
+  );
 
   // create function to update users state by sending a GET request to the server
   const updateUsers = () => {
@@ -32,6 +39,12 @@ function App() {
       })
       .catch((error) => console.error(error));
   };
+
+  // Whenever state changes, write session data to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem("userName", userName);
+    sessionStorage.setItem("userNameSubmitted", userNameSubmitted);
+  });
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // remove the "#" character
