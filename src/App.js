@@ -19,7 +19,10 @@ function App() {
 
   const [users, setUsers] = useState([]);
 
-  const [estimation, setEstimation] = useState(null);
+  const [estimation, setEstimation] = useState(
+    sessionStorage.getItem("estimation") || null,
+  );
+
   const [userNameSubmitted, setUserNameSubmitted] = useState(
     sessionStorage.getItem("userNameSubmitted") || false,
   );
@@ -42,6 +45,7 @@ function App() {
 
   // Whenever state changes, write session data to sessionStorage
   useEffect(() => {
+    sessionStorage.setItem("estimation", estimation);
     sessionStorage.setItem("userName", userName);
     sessionStorage.setItem("userNameSubmitted", userNameSubmitted);
   });
