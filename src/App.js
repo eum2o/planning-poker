@@ -48,7 +48,7 @@ function App() {
     sessionStorage.setItem("estimation", estimation);
     sessionStorage.setItem("userName", userName);
     sessionStorage.setItem("userNameSubmitted", userNameSubmitted);
-  });
+  }, [estimation, userName, userNameSubmitted]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // remove the "#" character
