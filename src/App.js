@@ -11,21 +11,22 @@ import {
 } from "./constants";
 import "./estimationButtons.css";
 
+function useStateWithSessionStorage(key, initialValue) {
+  const [state, setState] = useState(
+    JSON.parse(sessionStorage.getItem(key)) || initialValue
+  );
+  useEffect(() => {
+    sessionStorage.setItem(key, JSON.stringify(state));
+  }, [key, state]);
+  return [state, setState];
+}
+
 function App() {
 
-  const [userName, setUserName] = useState(
-    sessionStorage.getItem("userName") || ""
-  );
-
   const [users, setUsers] = useState([]);
-
-  const [estimation, setEstimation] = useState(
-    sessionStorage.getItem("estimation") || null,
-  );
-
-  const [userNameSubmitted, setUserNameSubmitted] = useState(
-    sessionStorage.getItem("userNameSubmitted") || false,
-  );
+  const [userName, setUserName] = useStateWithSessionStorage("userName", "");
+  const [estimation, setEstimation] = useStateWithSessionStorage("estimation", null);
+  const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage("userNameSubmitted", false);
 
   // create function to update users state by sending a GET request to the server
   const updateUsers = () => {
@@ -42,13 +43,6 @@ function App() {
       })
       .catch((error) => console.error(error));
   };
-
-  // Whenever state changes, write session data to sessionStorage
-  useEffect(() => {
-    sessionStorage.setItem("estimation", estimation);
-    sessionStorage.setItem("userName", userName);
-    sessionStorage.setItem("userNameSubmitted", userNameSubmitted);
-  }, [estimation, userName, userNameSubmitted]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // remove the "#" character
