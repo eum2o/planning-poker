@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import ParticipantList from "./ParticipantList";
@@ -29,7 +29,7 @@ function App() {
   const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage("userNameSubmitted", false);
 
   // create function to update users state by sending a GET request to the server
-  const updateUsers = () => {
+  const updateUsers = useCallback(() => {
     axios
       .get(USERS_URL)
       .then((res) => {
@@ -42,19 +42,19 @@ function App() {
         }
       })
       .catch((error) => console.error(error));
-  };
+  },[setEstimation, setUserNameSubmitted]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // remove the "#" character
     if (hash) {
       setUserName(hash);
     }
-  }, []);
+  }, [setUserName]);
 
   // Fetch all users and their estimations from the server when the component mounts for the first time (i.e. when the page loads)
   useEffect(() => {
     updateUsers();
-  }, []);
+  }, [updateUsers]);
 
   useEffect(() => {
     const socket = io(SOCKETIO_SERVER_URL, {
@@ -73,7 +73,7 @@ function App() {
       setUserNameSubmitted(false);
     });
     return () => socket.disconnect();
-  }, []);
+  }, [setEstimation, setUserNameSubmitted, updateUsers]);
 
   const handleNameSubmit = (event) => {
     event.preventDefault();
