@@ -114,8 +114,8 @@ function App() {
       <main className="py-5">
         {userNameSubmitted ? (
           <div>
-            <div class="card mb-4">
-              <div class="card-body">
+            <div className="card mb-4">
+              <div className="card-body">
                 Good to see you {userName}, oh wise estimator. Now take your
                 guess:
                 <div className="estimation-buttons">
