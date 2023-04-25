@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import ParticipantList from "./ParticipantList";
@@ -11,24 +11,25 @@ import {
 } from "./constants";
 import "./estimationButtons.css";
 
+function useStateWithSessionStorage(key, initialValue) {
+  const [state, setState] = useState(
+    JSON.parse(sessionStorage.getItem(key)) || initialValue
+  );
+  useEffect(() => {
+    sessionStorage.setItem(key, JSON.stringify(state));
+  }, [key, state]);
+  return [state, setState];
+}
+
 function App() {
 
-  const [userName, setUserName] = useState(
-    sessionStorage.getItem("userName") || ""
-  );
-
   const [users, setUsers] = useState([]);
-
-  const [estimation, setEstimation] = useState(
-    sessionStorage.getItem("estimation") || null,
-  );
-
-  const [userNameSubmitted, setUserNameSubmitted] = useState(
-    sessionStorage.getItem("userNameSubmitted") || false,
-  );
+  const [userName, setUserName] = useStateWithSessionStorage("userName", "");
+  const [estimation, setEstimation] = useStateWithSessionStorage("estimation", null);
+  const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage("userNameSubmitted", false);
 
   // create function to update users state by sending a GET request to the server
-  const updateUsers = () => {
+  const updateUsers = useCallback(() => {
     axios
       .get(USERS_URL)
       .then((res) => {
@@ -41,26 +42,19 @@ function App() {
         }
       })
       .catch((error) => console.error(error));
-  };
-
-  // Whenever state changes, write session data to sessionStorage
-  useEffect(() => {
-    sessionStorage.setItem("estimation", estimation);
-    sessionStorage.setItem("userName", userName);
-    sessionStorage.setItem("userNameSubmitted", userNameSubmitted);
-  });
+  },[setEstimation, setUserNameSubmitted]);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1); // remove the "#" character
     if (hash) {
       setUserName(hash);
     }
-  }, []);
+  }, [setUserName]);
 
   // Fetch all users and their estimations from the server when the component mounts for the first time (i.e. when the page loads)
   useEffect(() => {
     updateUsers();
-  }, []);
+  }, [updateUsers]);
 
   useEffect(() => {
     const socket = io(SOCKETIO_SERVER_URL, {
@@ -79,7 +73,7 @@ function App() {
       setUserNameSubmitted(false);
     });
     return () => socket.disconnect();
-  }, []);
+  }, [setEstimation, setUserNameSubmitted, updateUsers]);
 
   const handleNameSubmit = (event) => {
     event.preventDefault();
@@ -114,8 +108,8 @@ function App() {
       <main className="py-5">
         {userNameSubmitted ? (
           <div>
-            <div class="card mb-4">
-              <div class="card-body">
+            <div className="card mb-4">
+              <div className="card-body">
                 Good to see you {userName}, oh wise estimator. Now take your
                 guess:
                 <div className="estimation-buttons">

@@ -1,6 +1,5 @@
 import React from "react";
 import axios from "axios";
-import PropTypes from "prop-types";
 import { ESTIMATIONS_URL, USERS_URL } from "./constants";
 
 function ResetArea() {
@@ -42,9 +41,5 @@ function ResetArea() {
 
   
 }
-
-ResetArea.propTypes = {
-  onClick: PropTypes.func.isRequired,
-};
 
 export default ResetArea;
