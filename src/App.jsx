@@ -19,7 +19,7 @@ function App() {
   const [userName, setUserName] = useStateWithSessionStorage("userName", "");
   const [estimation, setEstimation] = useStateWithSessionStorage(
     "estimation",
-    null
+    -1
   );
   const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage(
     "userNameSubmitted",
@@ -40,21 +40,25 @@ function App() {
   const handleOnUpdateUsers = useCallback(
     (users) => {
       setUsers(users);
+      const user = users.find((user) => user.name === userName);
+      if (user) {
+        setEstimation(user.estimation ?? -1);
+      }
     },
-    [setUsers]
+    [setEstimation, setUsers, userName]
   );
 
   const handleOnEstimateReset = useCallback(
     (users) => {
       setUsers(users);
-      setEstimation(null);
+      setEstimation(-1);
     },
     [setEstimation, setUsers]
   );
 
   const handleResetUsers = useCallback(() => {
     setUsers([]);
-    setEstimation(null);
+    setEstimation(-1);
     setUserNameSubmitted(false);
   }, [setEstimation, setUserNameSubmitted, setUsers]);
 
@@ -68,17 +72,6 @@ function App() {
       socket.off("resetUsers");
     };
   }, [socket, handleOnUpdateUsers, handleOnEstimateReset, handleResetUsers]);
-
-  const handleNameSubmit = (event) => {
-    event.preventDefault();
-    setUserNameSubmitted(true);
-    socket.emit("addUser", userName);
-  };
-
-  const handleEstimationSubmit = (value) => {
-    setEstimation(value);
-    socket.emit("addEstimation", { name: userName, estimation: value });
-  };
 
   return (
     <SocketContext.Provider value={socket}>
@@ -97,13 +90,12 @@ function App() {
               userName={userName}
               estimation={estimation}
               users={users}
-              handleEstimationSubmit={handleEstimationSubmit}
             />
           ) : (
             <LoginForm
               userName={userName}
               setUserName={setUserName}
-              handleNameSubmit={handleNameSubmit}
+              setUserNameSubmitted={setUserNameSubmitted}
             />
           )}
         </main>

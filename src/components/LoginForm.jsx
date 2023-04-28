@@ -1,4 +1,19 @@
-export default function LoginForm({ userName, setUserName, handleNameSubmit }) {
+import { useContext } from "react";
+import { SocketContext } from "../context/socket";
+
+export default function LoginForm({
+  userName,
+  setUserName,
+  setUserNameSubmitted,
+}) {
+  const socket = useContext(SocketContext);
+
+  const handleNameSubmit = (event) => {
+    event.preventDefault();
+    setUserNameSubmitted(true);
+    socket.emit("addUser", userName);
+  };
+  
   return (
     <div className="d-flex flex-column justify-content-center align-items-center text-center">
       <form onSubmit={handleNameSubmit}>

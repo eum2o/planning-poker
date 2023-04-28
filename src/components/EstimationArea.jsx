@@ -1,18 +1,18 @@
-import { useContext } from "react";
 import ParticipantList from "./ParticipantList";
 import ResetArea from "./ResetArea";
 import EstimationSummary from "./EstimationSummary";
 import { valueToButtonLabel } from "../constants";
 import "./EstimationArea.css";
+import { useContext } from "react";
 import { SocketContext } from "../context/socket";
 
-export default function EstimationArea({
-  userName,
-  estimation,
-  users,
-  handleEstimationSubmit
-}) {
+export default function EstimationArea({ userName, estimation, users }) {
   const socket = useContext(SocketContext);
+
+  const handleEstimationSubmit = (value) => {
+    socket.emit("addEstimation", { name: userName, estimation: value });
+  };
+
   return (
     <div>
       <div className="card mb-4">
@@ -23,7 +23,7 @@ export default function EstimationArea({
               <button
                 key={key}
                 onClick={() => handleEstimationSubmit(key)}
-                disabled={estimation !== null}
+                disabled={estimation !== -1}
                 className={estimation === key ? "selected" : ""}
               >
                 {value}
@@ -34,7 +34,7 @@ export default function EstimationArea({
           <EstimationSummary currentUser={userName} users={users} />
         </div>
       </div>
-      <ResetArea socket={socket} />
+      <ResetArea />
     </div>
   );
 }
