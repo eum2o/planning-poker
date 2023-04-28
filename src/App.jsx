@@ -40,9 +40,12 @@ function App() {
 
   const socket = useContext(SocketContext);
 
-  const handleOnUpdateUsers = useCallback((users) => {
-    setUsers(users);
-  }, [setUsers]);
+  const handleOnUpdateUsers = useCallback(
+    (users) => {
+      setUsers(users);
+    },
+    [setUsers]
+  );
 
   const handleOnEstimateReset = useCallback(
     (users) => {
@@ -76,6 +79,7 @@ function App() {
   };
 
   const handleEstimationSubmit = (value) => {
+    setEstimation(value);
     socket.emit("addEstimation", { name: userName, estimation: value });
   };
 
