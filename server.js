@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const http = require("http");
 const server = http.createServer();
 const io = require("socket.io")(server, {
@@ -54,7 +56,7 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.REACT_APP_BACKEND_PORT;
 
 server.listen(PORT, () => {
   console.log(`Socket.io server running on port ${PORT}`);

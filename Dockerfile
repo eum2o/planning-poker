@@ -15,15 +15,22 @@ RUN yarn global add serve
 # Copy local code to the container image.
 COPY . ./
 
-ARG REACT_APP_SERVER_HOSTNAME=localhost
-ENV REACT_APP_SERVER_HOSTNAME=$REACT_APP_SERVER_HOSTNAME
+# Define build arguments and set them as environment variables.
+ARG REACT_APP_BACKEND_PORT=3001
+ARG REACT_APP_BACKEND_HOSTNAME=localhost
+ENV REACT_APP_BACKEND_PORT=$REACT_APP_BACKEND_PORT
+ENV REACT_APP_BACKEND_HOSTNAME=$REACT_APP_BACKEND_HOSTNAME
+
+# Create a new .env file using the build arguments.
+RUN echo "REACT_APP_BACKEND_PORT=$REACT_APP_BACKEND_PORT" > .env
+RUN echo "REACT_APP_BACKEND_HOSTNAME=$REACT_APP_BACKEND_HOSTNAME" >> .env
 
 # Build for production.
 RUN yarn build
 
-# Expose ports 3000 (react), 3001 (backend socket.io port)
+# Expose ports for the backend server and the React app.
 EXPOSE 3000
-EXPOSE 3001
+EXPOSE $REACT_APP_BACKEND_PORT
 
 # Start the server.
 CMD ["sh", "-c", "serve -s build -l 3000 & node server.js"]

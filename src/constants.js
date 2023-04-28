@@ -12,5 +12,3 @@ export const valueToButtonLabel = {
   "-3": "🤷🏻",
   "-4": "🍵",
 };
-
-export const SOCKETIO_SERVER_URL = `http://${process.env.REACT_APP_SERVER_HOSTNAME || 'localhost'}:3001`;
