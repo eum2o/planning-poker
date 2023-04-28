@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import ParticipantList from "./ParticipantList";
-import ResetArea from "./ResetArea";
-import EstimationSummary from "./EstimationSummary";
-import { valueToButtonLabel } from "./constants";
-import "./estimationButtons.css";
 import { SocketContext } from "./context/socket";
+import EstimationArea from "./components/EstimationArea";
+import LoginForm from "./components/LoginForm";
 
 // Use the session storage to persist the user name and estimation value when the page is refreshed.
 function useStateWithSessionStorage(key, initialValue) {
@@ -22,7 +19,7 @@ function App() {
   const [userName, setUserName] = useStateWithSessionStorage("userName", "");
   const [estimation, setEstimation] = useStateWithSessionStorage(
     "estimation",
-    null
+    -1
   );
   const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage(
     "userNameSubmitted",
@@ -40,21 +37,28 @@ function App() {
 
   const socket = useContext(SocketContext);
 
-  const handleOnUpdateUsers = useCallback((users) => {
-    setUsers(users);
-  }, [setUsers]);
+  const handleOnUpdateUsers = useCallback(
+    (users) => {
+      setUsers(users);
+      const user = users.find((user) => user.name === userName);
+      if (user) {
+        setEstimation(user.estimation ?? -1);
+      }
+    },
+    [setEstimation, setUsers, userName]
+  );
 
   const handleOnEstimateReset = useCallback(
     (users) => {
       setUsers(users);
-      setEstimation(null);
+      setEstimation(-1);
     },
     [setEstimation, setUsers]
   );
 
   const handleResetUsers = useCallback(() => {
     setUsers([]);
-    setEstimation(null);
+    setEstimation(-1);
     setUserNameSubmitted(false);
   }, [setEstimation, setUserNameSubmitted, setUsers]);
 
@@ -69,16 +73,6 @@ function App() {
     };
   }, [socket, handleOnUpdateUsers, handleOnEstimateReset, handleResetUsers]);
 
-  const handleNameSubmit = (event) => {
-    event.preventDefault();
-    setUserNameSubmitted(true);
-    socket.emit("addUser", userName);
-  };
-
-  const handleEstimationSubmit = (value) => {
-    socket.emit("addEstimation", { name: userName, estimation: value });
-  };
-
   return (
     <SocketContext.Provider value={socket}>
       <div className="App container my-5">
@@ -92,56 +86,17 @@ function App() {
         </header>
         <main className="py-5">
           {userNameSubmitted ? (
-            <div>
-              <div className="card mb-4">
-                <div className="card-body">
-                  Good to see you {userName}, oh wise estimator. Now take your
-                  guess:
-                  <div className="estimation-buttons">
-                    {Object.entries(valueToButtonLabel).map(([key, value]) => (
-                      <button
-                        key={key}
-                        onClick={() => handleEstimationSubmit(key)}
-                        disabled={estimation !== null}
-                        className={estimation === key ? "selected" : ""}
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  </div>
-                  <ParticipantList currentUser={userName} users={users} />
-                  <EstimationSummary currentUser={userName} users={users} />
-                </div>
-              </div>
-              <ResetArea socket={socket} />
-            </div>
+            <EstimationArea
+              userName={userName}
+              estimation={estimation}
+              users={users}
+            />
           ) : (
-            <div className="d-flex flex-column justify-content-center align-items-center text-center">
-              <form onSubmit={handleNameSubmit}>
-                <div className="d-flex">
-                  <div className="form-floating me-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nameInput"
-                      placeholder="Enter your name"
-                      value={userName}
-                      onChange={(event) =>
-                        setUserName(event.target.value.trim())
-                      }
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary ml-2"
-                    disabled={!userName.trim()}
-                  >
-                    Join
-                  </button>
-                </div>
-              </form>
-            </div>
+            <LoginForm
+              userName={userName}
+              setUserName={setUserName}
+              setUserNameSubmitted={setUserNameSubmitted}
+            />
           )}
         </main>
       </div>

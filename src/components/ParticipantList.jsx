@@ -1,5 +1,5 @@
 import React from "react";
-import { valueToButtonLabel } from "./constants";
+import { valueToButtonLabel } from "../constants";
 import "./ParticipantList.css";
 
 function ParticipantList({ users, currentUser }) {
