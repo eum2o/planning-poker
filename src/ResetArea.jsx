@@ -1,23 +1,15 @@
-import React from "react";
-import axios from "axios";
-import { ESTIMATIONS_URL, USERS_URL } from "./constants";
+import React, { useContext } from "react";
+import { SocketContext } from "./context/socket";
 
 function ResetArea() {
+  const socket = useContext(SocketContext);
+
   const handleResetEstimations = async () => {
-    // send a DELETE request to the API and handle errors
-    try {
-      await axios.delete(ESTIMATIONS_URL);
-    } catch (error) {
-      console.error(error);
-    }
+    socket.emit("resetEstimations");
   };
 
   const handleResetUsers = async () => {
-    try {
-      await axios.delete(`${USERS_URL}`);
-    } catch (error) {
-      console.error(error);
-    }
+    socket.emit("resetUsers");
   };
 
   return (
@@ -38,8 +30,6 @@ function ResetArea() {
       </button>
     </div>
   );
-
-  
 }
 
 export default ResetArea;

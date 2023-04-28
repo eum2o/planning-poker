@@ -1,84 +1,61 @@
-const express = require("express");
-const cors = require("cors");
-const app = express();
 const http = require("http");
-const server = http.createServer(app);
+const server = http.createServer();
 const io = require("socket.io")(server, {
   cors: {
     origin: "*",
-  }
+  },
 });
-
-const APP_PORT = process.env.SERVER_PORT || 5000;
-const SOCKET_PORT = process.env.SOCKET_PORT || 3001;
-
-app.use(express.json());
-app.use(cors());
 
 let users = [];
 
-app.get("/api/users", (req, res) => {
-  console.log("GET /api/users");
-  res.json(users);
-});
+io.on("connection", (socket) => {
+  console.log(`Client ${socket.id} connected`);
 
-app.post("/api/users", (req, res) => {
-  const { name } = req.body;
-  const userExists = users.some((u) => u.name === name);
+  socket.on("addUser", (name) => {
+    const userExists = users.some((u) => u.name === name);
 
-  if (userExists) {
-    return;
-  }
+    if (userExists) {
+      return;
+    }
 
-  const newUser = { name, estimation: -1 };
-  users.push(newUser);
-  console.log(`POST /api/users: ${name}`);
+    const newUser = { name, estimation: -1 };
+    users.push(newUser);
+    console.log(`User added: ${name}`);
+    io.emit("allUsers", users);
+  });
 
-  io.emit("dbUpdated");
+  socket.on("resetUsers", () => {
+    console.log("Users reset");
+    users = [];
+    io.emit("resetUsers", users);
+  });
 
-  res.json(newUser);
-});
+  socket.on("addEstimation", ({ name, estimation }) => {
+    console.log(`Adding estimation for ${name}: ${estimation}`);
 
-app.delete("/api/users", (req, res) => {
-  console.log("DELETE /api/users");
+    const user = users.find((u) => u.name === name);
+    if (!user) {
+      console.error(`User ${name} not found`);
+      return;
+    }
 
-  users = [];
-
-  io.emit("userReset");
-
-  res.json(users);
-});
-
-app.post("/api/users/:name/estimations", (req, res) => {
-  const { name } = req.params;
-  const { estimation } = req.body;
-  console.log(`POST /api/users/${name}/estimations: ${estimation}`);
-
-  const user = users.find((u) => u.name === name);
-  if (!user) {
-    res.status(404).send("User not found");
-  } else {
     user.estimation = estimation;
-    res.json(user);
+    io.emit("allUsers", users);
+  });
 
-    io.emit("dbUpdated");
-  }
+  socket.on("resetEstimations", () => {
+    console.log("Estimations reset");
+    users.forEach((u) => (u.estimation = -1));
+    io.emit("resetEstimations", users);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Client ${socket.id} disconnected`);
+  });
 });
 
-app.delete("/api/users/estimations", (req, res) => {
-  console.log("DELETE /api/users/estimations");
+const PORT = process.env.PORT || 3001;
 
-  users.forEach((u) => (u.estimation = -1));
-
-  io.emit("estimateReset");
-
-  res.json(users);
-});
-
-server.listen(SOCKET_PORT, () => {
-  console.log(`Socket.io server running on port ${SOCKET_PORT}`);
-});
-
-app.listen(APP_PORT, () => {
-  console.log(`Express server running on port ${APP_PORT}`);
+server.listen(PORT, () => {
+  console.log(`Socket.io server running on port ${PORT}`);
 });

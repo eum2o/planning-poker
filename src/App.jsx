@@ -1,16 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import io from "socket.io-client";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import ParticipantList from "./ParticipantList";
 import ResetArea from "./ResetArea";
 import EstimationSummary from "./EstimationSummary";
-import {
-  valueToButtonLabel,
-  SOCKETIO_SERVER_URL,
-  USERS_URL,
-} from "./constants";
+import { valueToButtonLabel } from "./constants";
 import "./estimationButtons.css";
+import { SocketContext } from "./context/socket";
 
+// Use the session storage to persist the user name and estimation value when the page is refreshed.
 function useStateWithSessionStorage(key, initialValue) {
   const [state, setState] = useState(
     JSON.parse(sessionStorage.getItem(key)) || initialValue
@@ -22,142 +18,134 @@ function useStateWithSessionStorage(key, initialValue) {
 }
 
 function App() {
-
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useStateWithSessionStorage("users", []);
   const [userName, setUserName] = useStateWithSessionStorage("userName", "");
-  const [estimation, setEstimation] = useStateWithSessionStorage("estimation", null);
-  const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage("userNameSubmitted", false);
-
-  // create function to update users state by sending a GET request to the server
-  const updateUsers = useCallback(() => {
-    axios
-      .get(USERS_URL)
-      .then((res) => {
-        let users = res.data;
-        setUsers(res.data);
-        // users is empty, reset userNameSubmitted, userName and estimation
-        if (users.length === 0) {
-          setUserNameSubmitted(false);
-          setEstimation(null);
-        }
-      })
-      .catch((error) => console.error(error));
-  },[setEstimation, setUserNameSubmitted]);
+  const [estimation, setEstimation] = useStateWithSessionStorage(
+    "estimation",
+    null
+  );
+  const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage(
+    "userNameSubmitted",
+    false
+  );
 
   useEffect(() => {
+    // If the URL contains a hash, use it as the user name. Useful for bookmarking.
     const hash = window.location.hash.slice(1); // remove the "#" character
     if (hash) {
       setUserName(hash);
     }
-  }, [setUserName]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  // Fetch all users and their estimations from the server when the component mounts for the first time (i.e. when the page loads)
-  useEffect(() => {
-    updateUsers();
-  }, [updateUsers]);
+  const socket = useContext(SocketContext);
+
+  const handleOnUpdateUsers = useCallback((users) => {
+    setUsers(users);
+  }, [setUsers]);
+
+  const handleOnEstimateReset = useCallback(
+    (users) => {
+      setUsers(users);
+      setEstimation(null);
+    },
+    [setEstimation, setUsers]
+  );
+
+  const handleResetUsers = useCallback(() => {
+    setUsers([]);
+    setEstimation(null);
+    setUserNameSubmitted(false);
+  }, [setEstimation, setUserNameSubmitted, setUsers]);
 
   useEffect(() => {
-    const socket = io(SOCKETIO_SERVER_URL, {
-      agent: false,
-    });
-    socket.on("dbUpdated", () => {
-      updateUsers();
-    });
-    socket.on("estimateReset", () => {
-      setEstimation(null);
-      updateUsers();
-    });
-    socket.on("userReset", () => {
-      setUsers([]);
-      setEstimation(null);
-      setUserNameSubmitted(false);
-    });
-    return () => socket.disconnect();
-  }, [setEstimation, setUserNameSubmitted, updateUsers]);
+    socket.on("allUsers", (users) => handleOnUpdateUsers(users));
+    socket.on("resetEstimations", (users) => handleOnEstimateReset(users));
+    socket.on("resetUsers", () => handleResetUsers());
+    return () => {
+      socket.off("allUsers");
+      socket.off("resetEstimations");
+      socket.off("resetUsers");
+    };
+  }, [socket, handleOnUpdateUsers, handleOnEstimateReset, handleResetUsers]);
 
   const handleNameSubmit = (event) => {
     event.preventDefault();
     setUserNameSubmitted(true);
-
-    axios.post(USERS_URL, { name: userName }).then((res) => {
-      setUsers((prevUsers) => [...prevUsers, res.data]);
-      event.target.reset();
-    });
+    socket.emit("addUser", userName);
   };
 
   const handleEstimationSubmit = (value) => {
-    axios
-      .post(`${USERS_URL}/${userName}/estimations`, {
-        estimation: value,
-      })
-      .then((res) => {
-        setEstimation(value);
-      });
+    socket.emit("addEstimation", { name: userName, estimation: value });
   };
 
   return (
-    <div className="App container my-5">
-      <header className="App-header text-center">
-        <h1 style={{ fontFamily: "Bangers", fontSize: "4rem" }}>
-          🂡 Peculiar Planning Poker 🃏
-        </h1>
-        <p className="text-muted font-italic small">
-          ... where every guess is a wild card.
-        </p>
-      </header>
-      <main className="py-5">
-        {userNameSubmitted ? (
-          <div>
-            <div className="card mb-4">
-              <div className="card-body">
-                Good to see you {userName}, oh wise estimator. Now take your
-                guess:
-                <div className="estimation-buttons">
-                  {Object.entries(valueToButtonLabel).map(([key, value]) => (
-                    <button
-                      key={key}
-                      onClick={() => handleEstimationSubmit(key)}
-                      disabled={estimation !== null}
-                      className={estimation === key ? "selected" : ""}
-                    >
-                      {value}
-                    </button>
-                  ))}
+    <SocketContext.Provider value={socket}>
+      <div className="App container my-5">
+        <header className="App-header text-center">
+          <h1 style={{ fontFamily: "Bangers", fontSize: "4rem" }}>
+            🂡 Peculiar Planning Poker 🃏
+          </h1>
+          <p className="text-muted font-italic small">
+            ... where every guess is a wild card.
+          </p>
+        </header>
+        <main className="py-5">
+          {userNameSubmitted ? (
+            <div>
+              <div className="card mb-4">
+                <div className="card-body">
+                  Good to see you {userName}, oh wise estimator. Now take your
+                  guess:
+                  <div className="estimation-buttons">
+                    {Object.entries(valueToButtonLabel).map(([key, value]) => (
+                      <button
+                        key={key}
+                        onClick={() => handleEstimationSubmit(key)}
+                        disabled={estimation !== null}
+                        className={estimation === key ? "selected" : ""}
+                      >
+                        {value}
+                      </button>
+                    ))}
+                  </div>
+                  <ParticipantList currentUser={userName} users={users} />
+                  <EstimationSummary currentUser={userName} users={users} />
                 </div>
-                <ParticipantList currentUser={userName} users={users} />
-                <EstimationSummary currentUser={userName} users={users} />
               </div>
+              <ResetArea socket={socket} />
             </div>
-            <ResetArea />
-          </div>
-        ) : (
-          <div className="d-flex flex-column justify-content-center align-items-center text-center">
-            <form onSubmit={handleNameSubmit}>
-              <div className="d-flex">
-                <div className="form-floating me-2">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="nameInput"
-                    placeholder="Enter your name"
-                    value={userName}
-                    onChange={(event) => setUserName(event.target.value.trim())}
-                    required
-                  />
+          ) : (
+            <div className="d-flex flex-column justify-content-center align-items-center text-center">
+              <form onSubmit={handleNameSubmit}>
+                <div className="d-flex">
+                  <div className="form-floating me-2">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="nameInput"
+                      placeholder="Enter your name"
+                      value={userName}
+                      onChange={(event) =>
+                        setUserName(event.target.value.trim())
+                      }
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary ml-2"
+                    disabled={!userName.trim()}
+                  >
+                    Join
+                  </button>
                 </div>
-                <button
-                  type="submit"
-                  className="btn btn-primary ml-2"
-                  disabled={!userName.trim()}
-                >
-                  Join
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-      </main>
-    </div>
+              </form>
+            </div>
+          )}
+        </main>
+      </div>
+    </SocketContext.Provider>
   );
 }
 
