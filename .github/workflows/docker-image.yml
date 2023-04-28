@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build --build-arg REACT_APP_SERVER_HOSTNAME=${{ secrets.REACT_APP_SERVER_HOSTNAME }} -t ${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKER_REPOSITORY }} .
+      run: docker build --build-arg REACT_APP_BACKEND_HOSTNAME=${{ secrets.REACT_APP_SERVER_HOSTNAME }} -t ${{ secrets.DOCKERHUB_USER }}/${{ secrets.DOCKER_REPOSITORY }} .
     - name: Log in to the Docker Hub registry
       run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USER }} --password-stdin
     - name: Push the Docker image

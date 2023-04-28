@@ -35,7 +35,7 @@ To modify the card texts, edit the `valueToButtonLabel` map in [src/constants.js
 
 To run the latest build of PPP, you can use Docker:
 
-1. Build the image: `docker build --build-arg REACT_APP_SERVER_HOSTNAME=<host name> -t ppp .` 
+1. Build the image: `docker build --build-arg REACT_APP_BACKEND_HOSTNAME=<host name> -t ppp .` 
    * Replace `<host name>` with the host name of wherever you are hosting the backend server (i.e. "localhost" if you run it locally). Clients (i.e. browsers) will connect to this host. Defaults to "localhost" if not specified. I.e. for running both client + server on localhost, `docker build -t ppp .` is sufficient.
 2. Run the container: `docker run -d --rm -p 3000:3000 -p 3001:3001 --name ppp ppp`
 3. Open a web browser and go to: `http://<host name>:3000`
