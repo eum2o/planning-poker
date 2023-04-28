@@ -46,8 +46,8 @@ To run PPP locally during development, you can follow these steps:
 
 1. Clone this repository
 2. Install dependencies: `yarn`
-3. Start the server: `node server.js` (this will bind port 3001 and 5000)
-4. Start the React app: `yarn start`
+3. Start the server: `node server.js` (this will bind port 3001)
+4. Start the React app: `yarn start` (this will bind port 3000)
 5. Open a web browser and go to: `http://localhost:3000`
 
 ### Debugging server.js with VS Code
@@ -67,7 +67,7 @@ Contributions to this project are welcome! To get started, fork the repository, 
 For more information on contributing to GitHub projects, please see https://docs.github.com/en/get-started/quickstart/contributing-to-projects. Your contributions are appreciated, and thank you for considering to collaborate with this project!
 
 ## Developer Hints
-The [server.js](server.js) manages the state of all users and estimations to ensure consistency among clients. Clients send updates to the server which runs with [Express](https://expressjs.com/) (port 5000), and receive server updates via [socket.io](https://socket.io/) (port 3001).
+The [server.js](server.js) manages the state of all users and estimations to ensure consistency among clients. 
 
 ### Useful Resources
 * https://socket.io/docs/v4/emit-cheatsheet/
