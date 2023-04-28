@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import ParticipantList from "./ParticipantList";
-import ResetArea from "./ResetArea";
-import EstimationSummary from "./EstimationSummary";
-import { valueToButtonLabel } from "./constants";
-import "./estimationButtons.css";
 import { SocketContext } from "./context/socket";
+import EstimationArea from "./components/EstimationArea";
+import LoginForm from "./components/LoginForm";
 
 // Use the session storage to persist the user name and estimation value when the page is refreshed.
 function useStateWithSessionStorage(key, initialValue) {
@@ -96,56 +93,18 @@ function App() {
         </header>
         <main className="py-5">
           {userNameSubmitted ? (
-            <div>
-              <div className="card mb-4">
-                <div className="card-body">
-                  Good to see you {userName}, oh wise estimator. Now take your
-                  guess:
-                  <div className="estimation-buttons">
-                    {Object.entries(valueToButtonLabel).map(([key, value]) => (
-                      <button
-                        key={key}
-                        onClick={() => handleEstimationSubmit(key)}
-                        disabled={estimation !== null}
-                        className={estimation === key ? "selected" : ""}
-                      >
-                        {value}
-                      </button>
-                    ))}
-                  </div>
-                  <ParticipantList currentUser={userName} users={users} />
-                  <EstimationSummary currentUser={userName} users={users} />
-                </div>
-              </div>
-              <ResetArea socket={socket} />
-            </div>
+            <EstimationArea
+              userName={userName}
+              estimation={estimation}
+              users={users}
+              handleEstimationSubmit={handleEstimationSubmit}
+            />
           ) : (
-            <div className="d-flex flex-column justify-content-center align-items-center text-center">
-              <form onSubmit={handleNameSubmit}>
-                <div className="d-flex">
-                  <div className="form-floating me-2">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="nameInput"
-                      placeholder="Enter your name"
-                      value={userName}
-                      onChange={(event) =>
-                        setUserName(event.target.value.trim())
-                      }
-                      required
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary ml-2"
-                    disabled={!userName.trim()}
-                  >
-                    Join
-                  </button>
-                </div>
-              </form>
-            </div>
+            <LoginForm
+              userName={userName}
+              setUserName={setUserName}
+              handleNameSubmit={handleNameSubmit}
+            />
           )}
         </main>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { valueToButtonLabel } from "./constants";
+import { valueToButtonLabel } from "../constants";
 import "./EstimationSummary.css";
 
 function EstimationSummary({ currentUser, users }) {
@@ -23,7 +23,7 @@ function EstimationSummary({ currentUser, users }) {
     <div className="d-flex align-items-center justify-content-center">
       <div
         className={`rounded-circle border border-gray d-flex flex-column align-items-center justify-content-center text-center p-3 position-relative ${
-          mostFrequentEstimation !== null ? " bg-lightgreen" : "bg-gray"
+          mostFrequentEstimation !== null ? "bg-lightgreen" : "bg-gray"
         }`}
       >
         <div className="position-absolute top-0 start-50 translate-middle-x bg-white px-2 rounded-pill">

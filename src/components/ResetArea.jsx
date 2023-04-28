@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { SocketContext } from "./context/socket";
+import { SocketContext } from "../context/socket";
 
 function ResetArea() {
   const socket = useContext(SocketContext);
