@@ -33,11 +33,11 @@ To modify the card texts, edit the `valueToButtonLabel` map in [src/constants.js
 
 ### Running the latest build
 
-To run the latest build of Planning Poker, you can use Docker:
+To run the latest build of PPP, you can use Docker:
 
 1. Build the image: `docker build --build-arg REACT_APP_SERVER_HOSTNAME=<host name> -t ppp .` 
    * Replace `<host name>` with the host name of wherever you are hosting the backend server (i.e. "localhost" if you run it locally). Clients (i.e. browsers) will connect to this host. Defaults to "localhost" if not specified. I.e. for running both client + server on localhost, `docker build -t ppp .` is sufficient.
-2. Run the container: `docker run -d --rm -p 3000:3000 -p 3001:3001 -p 5000:5000 --name ppp ppp`
+2. Run the container: `docker run -d --rm -p 3000:3000 -p 3001:3001 --name ppp ppp`
 3. Open a web browser and go to: `http://<host name>:3000`
 
 ### Running PPP locally during development
@@ -45,9 +45,9 @@ To run the latest build of Planning Poker, you can use Docker:
 To run PPP locally during development, you can follow these steps:
 
 1. Clone this repository
-2. Install dependencies: `npm install`
+2. Install dependencies: `yarn`
 3. Start the server: `node server.js` (this will bind port 3001 and 5000)
-4. Start the React app: `npm start`
+4. Start the React app: `yarn start`
 5. Open a web browser and go to: `http://localhost:3000`
 
 ### Debugging server.js with VS Code
@@ -68,3 +68,7 @@ For more information on contributing to GitHub projects, please see https://docs
 
 ## Developer Hints
 The [server.js](server.js) manages the state of all users and estimations to ensure consistency among clients. Clients send updates to the server which runs with [Express](https://expressjs.com/) (port 5000), and receive server updates via [socket.io](https://socket.io/) (port 3001).
+
+### Useful Resources
+* https://socket.io/docs/v4/emit-cheatsheet/
+* https://dev.to/bravemaster619/how-to-use-socket-io-client-correctly-in-react-app-o65
