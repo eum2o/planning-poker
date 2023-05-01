@@ -26,14 +26,15 @@ function App() {
     false
   );
 
+  /**
+   * If the URL contains a hash, use it as the user name. Useful for bookmarking.
+   */
   useEffect(() => {
-    // If the URL contains a hash, use it as the user name. Useful for bookmarking.
     const hash = window.location.hash.slice(1); // remove the "#" character
     if (hash) {
       setUserName(hash);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [setUserName]);
 
   const socket = useContext(SocketContext);
 
@@ -62,6 +63,9 @@ function App() {
     setUserNameSubmitted(false);
   }, [setEstimation, setUserNameSubmitted, setUsers]);
 
+  /**
+   * Register server listeners.
+   */
   useEffect(() => {
     socket.on("allUsers", (users) => handleOnUpdateUsers(users));
     socket.on("resetEstimations", (users) => handleOnEstimateReset(users));
