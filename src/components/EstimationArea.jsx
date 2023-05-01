@@ -6,11 +6,12 @@ import "./EstimationArea.css";
 import { useContext } from "react";
 import { SocketContext } from "../context/socket";
 
-export default function EstimationArea({ userName, estimation, users }) {
+export default function EstimationArea({ userName, estimation, setEstimation, users }) {
   const socket = useContext(SocketContext);
 
   const handleEstimationSubmit = (value) => {
     socket.emit("addEstimation", { name: userName, estimation: value });
+    setEstimation(value);
   };
 
   return (

@@ -26,6 +26,8 @@ function App() {
     false
   );
 
+  const socket = useContext(SocketContext);
+
   /**
    * If the URL contains a hash, use it as the user name. Useful for bookmarking.
    */
@@ -36,17 +38,11 @@ function App() {
     }
   }, [setUserName]);
 
-  const socket = useContext(SocketContext);
-
   const handleOnUpdateUsers = useCallback(
     (users) => {
       setUsers(users);
-      const user = users.find((user) => user.name === userName);
-      if (user) {
-        setEstimation(user.estimation ?? -1);
-      }
     },
-    [setEstimation, setUsers, userName]
+    [setUsers]
   );
 
   const handleOnEstimateReset = useCallback(
@@ -93,6 +89,7 @@ function App() {
             <EstimationArea
               userName={userName}
               estimation={estimation}
+              setEstimation={setEstimation}
               users={users}
             />
           ) : (
