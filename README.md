@@ -1,4 +1,4 @@
-# Peculiar Planning Poker
+# Peculiar Planning 
 
 A planning poker app for agile teams to estimate work items using the Fibonacci sequence.
 
@@ -35,8 +35,9 @@ To modify the card texts, edit the `valueToButtonLabel` map in [src/constants.js
 
 To run the latest build of PPP, you can use Docker:
 
-1. Build the image: `docker build --build-arg REACT_APP_BACKEND_HOSTNAME=<host name> -t ppp .` 
-   * Replace `<host name>` with the host name of wherever you are hosting the backend server (i.e. "localhost" if you run it locally). Clients (i.e. browsers) will connect to this host. Defaults to "localhost" if not specified. I.e. for running both client + server on localhost, `docker build -t ppp .` is sufficient.
+1. Build the image: `docker build --build-arg REACT_APP_BACKEND_HOSTNAME=<host name> -t ppp .`
+   * Replace `<host name>` with host name of the server this app runs on (e.g. "my-website" without a protocol and port). Browsers will connect to this host via http.
+   * Omit the `--build-arg` argument to default to "localhost" (only makes sense for local Docker image testing): `docker build -t ppp .`
 2. Run the container: `docker run -d --rm -p 3000:3000 -p 3001:3001 --name ppp ppp`
 3. Open a web browser and go to: `http://<host name>:3000`
 
@@ -44,7 +45,7 @@ To run the latest build of PPP, you can use Docker:
 
 To run PPP locally during development, you can follow these steps:
 
-1. Clone this repository
+1. Clone this repository and `cd` into it
 2. Install dependencies: `yarn`
 3. Start the server: `node server.js` (this will bind port 3001)
 4. Start the React app: `yarn start` (this will bind port 3000)
