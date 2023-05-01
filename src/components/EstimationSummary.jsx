@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { valueToButtonLabel } from "../constants";
 import "./EstimationSummary.css";
 
-function EstimationSummary({ currentUser, users }) {
+function EstimationSummary({ users }) {
   const [mostFrequentEstimation, setMostFrequentEstimation] = useState(null);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ function EstimationSummary({ currentUser, users }) {
       const mostFrequent = getMostFrequentEstimation(estimations);
       setMostFrequentEstimation(mostFrequent);
     }
-  }, [users, currentUser]);
+  }, [users]);
 
   return (
     <div className="d-flex align-items-center justify-content-center">
@@ -45,8 +45,7 @@ function getMostFrequentEstimation(estimations) {
   const counts = estimations.reduce((acc, curr) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
-  }
-  , {});
+  }, {});
 
   const maxCount = Math.max(...Object.values(counts));
   const mostFrequentEstimations = Object.entries(counts)

@@ -10,7 +10,7 @@ export default function EstimationArea({ userName, estimation, users }) {
   const socket = useContext(SocketContext);
 
   const handleEstimationSubmit = (value) => {
-    socket.emit("addEstimation", { name: userName, estimation: value });
+    socket.emit("addEstimation", { estimation: value });
   };
 
   return (
@@ -30,8 +30,8 @@ export default function EstimationArea({ userName, estimation, users }) {
               </button>
             ))}
           </div>
-          <ParticipantList currentUser={userName} users={users} />
-          <EstimationSummary currentUser={userName} users={users} />
+          <ParticipantList users={users} />
+          <EstimationSummary users={users} />
         </div>
       </div>
       <ResetArea />

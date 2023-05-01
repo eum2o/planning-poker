@@ -41,12 +41,8 @@ function App() {
   const handleOnUpdateUsers = useCallback(
     (users) => {
       setUsers(users);
-      const user = users.find((user) => user.name === userName);
-      if (user) {
-        setEstimation(user.estimation ?? -1);
-      }
     },
-    [setEstimation, setUsers, userName]
+    [setUsers]
   );
 
   const handleOnEstimateReset = useCallback(

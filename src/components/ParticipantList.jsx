@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { valueToButtonLabel } from "../constants";
 import "./ParticipantList.css";
+import { SocketContext } from "../context/socket";
 
-function ParticipantList({ users, currentUser }) {
+function ParticipantList({ users }) {
+  const socket = useContext(SocketContext);
+
   // check if all users have submitted their estimations
   const allEstimationsSubmitted = users.every((user) => user.estimation !== -1);
 
@@ -17,13 +20,13 @@ function ParticipantList({ users, currentUser }) {
         {sortedUsers.map((user) => (
           <tr
             key={user.name}
-            className={user.name === currentUser ? "current-user" : ""}
+            className={user.socketId === socket.id ? "current-user" : ""}
           >
             <td>
               {user.estimation === -1 ? "🤔" : "✅"}
               <span className="user-name">{user.name}</span>
             </td>
-            {user.name === currentUser || allEstimationsSubmitted ? (
+            {user.socketId === socket.id || allEstimationsSubmitted ? (
               <td className="user-estimation">
                 <b>{valueToButtonLabel[user.estimation]}</b>
               </td>
