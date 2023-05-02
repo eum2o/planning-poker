@@ -22,18 +22,23 @@ function EstimationSummary({ users }) {
   return (
     <div className="d-flex align-items-center justify-content-center">
       <div
-        className={`rounded-circle border border-gray d-flex flex-column align-items-center justify-content-center text-center p-3 position-relative ${
+        className={`poker-card d-flex flex-column align-items-center justify-content-center text-center p-3 position-relative ${
           mostFrequentEstimation !== null ? "bg-lightgreen" : "bg-gray"
-        }`}
+        } ${mostFrequentEstimation === null ? "hidden-value" : ""}`}
       >
-        <div className="position-absolute top-0 start-50 translate-middle-x bg-white px-2 rounded-pill">
-          Consensus
+        <div className="card-consensus">
+        {mostFrequentEstimation !== null ? (
+            <>Consensus</>
+          ) : (
+            <>Waiting for<br/>
+            estimates</>
+          )}
         </div>
-        <div>
+        <div className="card-value">
           {mostFrequentEstimation !== null ? (
             valueToCardLabel[mostFrequentEstimation]
           ) : (
-            <i>(waiting for estimates)</i>
+            <>?</>
           )}
         </div>
       </div>

@@ -4,36 +4,77 @@
 }
 
 .bg-gray {
-    background-color: lightgray;
+  background-color: lightgray;
+}
+
+.poker-card {
+  width: 98px;
+  height: 140px;
+  cursor: not-allowed;
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+.poker-card:not(.hidden-value) {
+  box-shadow: 0 0 30px rgba(87, 214, 18, 0.5);
+  animation: pulse 2s ease-in-out infinite, shine 2s ease-in-out infinite;
+  background: linear-gradient(
+    45deg,
+    rgba(201, 255, 197, 0.25),
+    rgba(255, 0, 0, 0.25),
+    rgba(255, 255, 0, 0.25),
+    rgba(0, 255, 0, 0.25),
+    rgba(0, 255, 255, 0.25),
+    rgba(0, 0, 255, 0.25),
+    rgba(255, 0, 255, 0.25),
+    rgba(201, 255, 197, 0.25)
+  );
+  background-size: 200% 200%;
+  animation: pulse 2s ease-in-out infinite, shine 2s ease-in-out infinite;
+  animation-name: gradient;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-color: rgba(255, 255, 255, 0.5);
   }
-
-.border-gray {
-  border-color: gray;
+  50% {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(8, 252, 228, 0.5);
+  }
+  100% {
+    background-color: rgba(255, 255, 255, 0.5);
+  }
 }
 
-.rounded-circle {
-  width: 150px;
-  height: 150px;
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.rounded-circle > div:first-child {
+.card-consensus {
   position: absolute;
-  top: -10px;
+  top: 100px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: white;
-  padding: 0 10px;
-  font-size: 17px;
-}
-
-.card-subtitle {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px;
+  font-size: 10px;
   padding: 0 5px;
-  background-color: #ccc;
   border-radius: 10px;
   white-space: nowrap;
+  line-height: 1.1;
+  color: #414241;
+}
+
+.card-value {
+  font-size: 50px;
+  text-shadow: 1px 1px 2px rgba(38, 37, 37, 0.521);
 }
