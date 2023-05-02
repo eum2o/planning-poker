@@ -49,8 +49,8 @@ function getMostFrequentEstimation(estimations) {
 
   const maxCount = Math.max(...Object.values(counts));
   const mostFrequentEstimations = Object.entries(counts)
-    .filter(([estimation, count]) => count === maxCount)
-    .map(([estimation, count]) => estimation);
+    .filter(([_estimation, count]) => count === maxCount)
+    .map(([estimation, _count]) => estimation);
 
   return Math.max(...mostFrequentEstimations);
 }

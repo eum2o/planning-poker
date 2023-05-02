@@ -49,7 +49,7 @@ To run PPP locally during development, you can follow these steps:
 2. Install dependencies: `yarn`
 3. Start the server: `node server.js` (this will bind port 3001)
 4. Start the React app: `yarn start` (this will bind port 3000)
-5. Open a web browser and go to: `http://localhost:3000`
+5. Open a web browser and go to: `http://localhost:3000`. Open multiple tabs to simulate multiple users.
 
 ### Debugging server.js with VS Code
 
