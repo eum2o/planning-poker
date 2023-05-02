@@ -10,6 +10,15 @@ const io = require("socket.io")(server, {
 
 let users = [];
 
+function addUserOrdered(newUser) {
+  const index = users.findIndex((u) => u.name > newUser.name);
+  if (index === -1) {
+    users.push(newUser);
+  } else {
+    users.splice(index, 0, newUser);
+  }
+}
+
 io.on("connection", (socket) => {
   console.log(`Client ${socket.id} connected`);
 
@@ -22,7 +31,7 @@ io.on("connection", (socket) => {
       return;
     }
 
-    users.push(newUser);
+    addUserOrdered(newUser);
     console.log(`User added: ${name}`);
     io.emit("allUsers", users);
   });
