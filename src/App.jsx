@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { SocketContext } from "./context/socket";
 import EstimationArea from "./components/EstimationArea";
 import LoginForm from "./components/LoginForm";
+import { NO_ESTIMATION } from "./cards";
 
 // Use the session storage to persist the user name and estimation value when the page is refreshed.
 function useStateWithSessionStorage(key, initialValue) {
@@ -19,7 +20,7 @@ function App() {
   const [userName, setUserName] = useStateWithSessionStorage("userName", "");
   const [estimation, setEstimation] = useStateWithSessionStorage(
     "estimation",
-    -1
+    NO_ESTIMATION
   );
   const [userNameSubmitted, setUserNameSubmitted] = useStateWithSessionStorage(
     "userNameSubmitted",
@@ -48,14 +49,14 @@ function App() {
   const handleOnEstimateReset = useCallback(
     (users) => {
       setUsers(users);
-      setEstimation(-1);
+      setEstimation(NO_ESTIMATION);
     },
     [setEstimation, setUsers]
   );
 
   const handleResetUsers = useCallback(() => {
     setUsers([]);
-    setEstimation(-1);
+    setEstimation(NO_ESTIMATION);
     setUserNameSubmitted(false);
   }, [setEstimation, setUserNameSubmitted, setUsers]);
 
@@ -72,6 +73,16 @@ function App() {
       socket.off("resetUsers");
     };
   }, [socket, handleOnUpdateUsers, handleOnEstimateReset, handleResetUsers]);
+
+  // When the user refreshes the page, the socket.io client reconnects and we have to pass the user state to the server again.
+  useEffect(() => {
+    if (userNameSubmitted) {
+      socket.emit("addUser", userName);
+      if (estimation !== NO_ESTIMATION) {
+        socket.emit("addEstimation", { estimation });
+      }
+    }
+  }, [estimation, socket, userName, userNameSubmitted]);
 
   return (
     <SocketContext.Provider value={socket}>

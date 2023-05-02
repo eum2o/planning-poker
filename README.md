@@ -27,7 +27,7 @@ Happy estimating!
 
 ## Card Texts
 
-To modify the card texts, edit the `valueToButtonLabel` map in [src/constants.js](src/constants.js).
+To modify the card texts, edit the `valueToCardLabel` map in [src/cards.js](src/cards.js).
 
 ## Usage
 

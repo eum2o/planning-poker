@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { valueToButtonLabel } from "../constants";
+import { valueToCardLabel, NO_ESTIMATION } from "../cards";
 import "./EstimationSummary.css";
 
-function EstimationSummary({ currentUser, users }) {
+function EstimationSummary({ users }) {
   const [mostFrequentEstimation, setMostFrequentEstimation] = useState(null);
 
   useEffect(() => {
     const allEstimationsSubmitted = users.every(
-      (user) => user.estimation !== -1
+      (user) => user.estimation !== NO_ESTIMATION
     );
 
     if (!allEstimationsSubmitted) {
@@ -17,7 +17,7 @@ function EstimationSummary({ currentUser, users }) {
       const mostFrequent = getMostFrequentEstimation(estimations);
       setMostFrequentEstimation(mostFrequent);
     }
-  }, [users, currentUser]);
+  }, [users]);
 
   return (
     <div className="d-flex align-items-center justify-content-center">
@@ -31,7 +31,7 @@ function EstimationSummary({ currentUser, users }) {
         </div>
         <div>
           {mostFrequentEstimation !== null ? (
-            valueToButtonLabel[mostFrequentEstimation]
+            valueToCardLabel[mostFrequentEstimation]
           ) : (
             <i>(waiting for estimates)</i>
           )}
@@ -45,8 +45,7 @@ function getMostFrequentEstimation(estimations) {
   const counts = estimations.reduce((acc, curr) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
-  }
-  , {});
+  }, {});
 
   const maxCount = Math.max(...Object.values(counts));
   const mostFrequentEstimations = Object.entries(counts)

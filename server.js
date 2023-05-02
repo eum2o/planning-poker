@@ -1,4 +1,4 @@
-require('dotenv').config();
+require("dotenv").config();
 
 const http = require("http");
 const server = http.createServer();
@@ -14,13 +14,14 @@ io.on("connection", (socket) => {
   console.log(`Client ${socket.id} connected`);
 
   socket.on("addUser", (name) => {
-    const userExists = users.some((u) => u.name === name);
+    const newUser = { socketId: socket.id, name, estimation: -1 };
 
-    if (userExists) {
+    // if the user already exists, do not add it again
+    if (users.find((u) => u.socketId === socket.id)) {
+      console.log(`User already exists: ${name}`);
       return;
     }
 
-    const newUser = { name, estimation: -1 };
     users.push(newUser);
     console.log(`User added: ${name}`);
     io.emit("allUsers", users);
@@ -32,17 +33,15 @@ io.on("connection", (socket) => {
     io.emit("resetUsers", users);
   });
 
-  socket.on("addEstimation", ({ name, estimation }) => {
-    console.log(`Adding estimation for ${name}: ${estimation}`);
-
-    const user = users.find((u) => u.name === name);
-    if (!user) {
-      console.error(`User ${name} not found`);
-      return;
+  socket.on("addEstimation", ({ estimation }) => {
+    const user = users.find((u) => u.socketId === socket.id);
+    if (user) {
+      console.log(`Adding estimation for ${user.name}: ${estimation}`);
+      user.estimation = estimation;
+      io.emit("allUsers", users);
+    } else {
+      console.log(`User not found for socket ID: ${socket.id}`);
     }
-
-    user.estimation = estimation;
-    io.emit("allUsers", users);
   });
 
   socket.on("resetEstimations", () => {
@@ -52,7 +51,9 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
+    users = users.filter((u) => u.socketId !== socket.id);
     console.log(`Client ${socket.id} disconnected`);
+    io.emit("allUsers", users);
   });
 });
 
