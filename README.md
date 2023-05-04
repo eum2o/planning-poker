@@ -1,4 +1,4 @@
-# Peculiar Planning 
+# Peculiar Planning Poker
 
 A planning poker app for agile teams to estimate work items using the Fibonacci sequence.
 
