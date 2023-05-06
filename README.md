@@ -68,7 +68,7 @@ Contributions to this project are welcome! To get started, fork the repository, 
 For more information on contributing to GitHub projects, please see https://docs.github.com/en/get-started/quickstart/contributing-to-projects. Your contributions are appreciated, and thank you for considering to collaborate with this project!
 
 ## Developer Hints
-The [server.js](server.js) manages the state of all users and estimations to ensure consistency among clients. 
+The [server.js](backend/server.js) manages the state of all users and estimations to ensure consistency among clients. 
 
 ### Useful Resources
 * https://socket.io/docs/v4/emit-cheatsheet/

@@ -33,4 +33,4 @@ EXPOSE 3000
 EXPOSE $REACT_APP_BACKEND_PORT
 
 # Start the server.
-CMD ["sh", "-c", "serve -s build -l 3000 & node server.js"]
+CMD ["sh", "-c", "serve -s build -l 3000 & node backend/server.js"]

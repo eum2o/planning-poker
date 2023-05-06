@@ -15,12 +15,15 @@
     "socket.io-client": "^4.6.1",
     "web-vitals": "^2.1.4"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^29.5.0"
+  },
   "scripts": {
     "start": "react-scripts start",
-    "backend": "node server.js",
+    "backend": "node backend/server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:backend": "jest --config=backend/__tests__/jest.backend.config.js",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

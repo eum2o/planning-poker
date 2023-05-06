@@ -24,7 +24,6 @@
 button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    /* add any other desired styles */
   }
   
 
