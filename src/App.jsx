@@ -36,8 +36,9 @@ function App() {
     const hash = window.location.hash.slice(1); // remove the "#" character
     if (hash) {
       setUserName(hash);
+      setUserNameSubmitted(true);
     }
-  }, [setUserName]);
+  }, [setUserName, setUserNameSubmitted]);
 
   const handleOnUpdateUsers = useCallback(
     (users) => {
