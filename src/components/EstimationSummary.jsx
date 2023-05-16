@@ -36,7 +36,7 @@ function EstimationSummary({ users }) {
         </div>
         <div className="card-value">
           {mostFrequentEstimation !== null ? (
-            valueToCardLabel[mostFrequentEstimation]
+            valueToCardLabel[mostFrequentEstimation]?.label
           ) : (
             <>?</>
           )}
