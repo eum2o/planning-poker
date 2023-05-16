@@ -4,6 +4,7 @@ import EstimationSummary from "./EstimationSummary";
 import { valueToCardLabel, NO_ESTIMATION } from "../cards";
 import "./EstimationArea.css";
 import { useContext } from "react";
+import { Tooltip } from "react-tooltip";
 import { SocketContext } from "../context/socket";
 
 export default function EstimationArea({
@@ -31,11 +32,18 @@ export default function EstimationArea({
                 onClick={() => handleEstimationSubmit(key)}
                 disabled={estimation !== NO_ESTIMATION}
                 className={estimation === key ? "selected" : ""}
+                data-tooltip-id="card-tooltip"
+                data-tooltip-content={value.description}
               >
-                {value}
+                {value.label}
               </button>
             ))}
           </div>
+          <Tooltip
+            id="card-tooltip"
+            place="top"
+            delayShow={500}
+          />
           <ParticipantList users={users} />
           <EstimationSummary users={users} />
         </div>

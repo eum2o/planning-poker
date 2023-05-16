@@ -33,7 +33,9 @@ function ParticipantList({ users }) {
             </td>
             {user.socketId === socket.id || allEstimationsSubmitted ? (
               <td className="user-estimation">
-                <b>{valueToCardLabel[user.estimation]}</b>
+                {user.estimation !== -1 && (
+                  <b>{valueToCardLabel[user.estimation]?.label}</b>
+                )}
               </td>
             ) : (
               <td className="user-estimation-placeholder">&nbsp;&nbsp;</td>
