@@ -3,6 +3,7 @@ import { SocketContext } from "./context/socket";
 import EstimationArea from "./components/EstimationArea";
 import LoginForm from "./components/LoginForm";
 import { NO_ESTIMATION } from "./cards";
+import { FaGithub } from "react-icons/fa";
 
 // Use the session storage to persist the user name and estimation value when the page is refreshed.
 function useStateWithSessionStorage(key, initialValue) {
@@ -95,6 +96,27 @@ function App() {
           <p className="text-muted font-italic small">
             ... where every guess is a wild card.
           </p>
+          <a
+            href="https://github.com/eum2o/planning-poker"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-block",
+              margin: "8px auto 0 auto",
+              color: "black",
+              textDecoration: "none",
+            }}
+          >
+            <FaGithub style={{ width: "24px", height: "24px" }} />
+            <span
+              style={{
+                marginLeft: "6px",
+                verticalAlign: "middle",
+              }}
+            >
+              GitHub
+            </span>
+          </a>
         </header>
         <main className="py-5">
           {userNameSubmitted ? (
