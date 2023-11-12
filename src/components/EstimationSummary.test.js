@@ -21,13 +21,13 @@ describe("calculateConsensus", () => {
     expect(result).toBe(2);
   });
 
-  it("finds consensus in a pair with an exact average match", () => {
+  it("determines consensus for a pair with an average needing rounding up", () => {
     const estimations = ["1", "2"];
     const result = calculateConsensus(estimations);
     expect(result).toBe(2);
   });
 
-  it("determines consensus for a pair with an average needing rounding up", () => {
+  it("finds consensus in a pair with an exact average match", () => {
     const estimations = ["1", "3"];
     const result = calculateConsensus(estimations);
     expect(result).toBe(2);
