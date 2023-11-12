@@ -3,7 +3,7 @@ import { valueToCardLabel, NO_ESTIMATION } from "../cards";
 import "./EstimationSummary.css";
 
 function EstimationSummary({ users }) {
-  const [mostFrequentEstimation, setMostFrequentEstimation] = useState(null);
+  const [consensus, setConsensus] = useState(null);
 
   useEffect(() => {
     const allEstimationsSubmitted = users.every(
@@ -11,11 +11,11 @@ function EstimationSummary({ users }) {
     );
 
     if (!allEstimationsSubmitted) {
-      setMostFrequentEstimation(null);
+      setConsensus(null);
     } else {
       const estimations = users.map((user) => user.estimation);
-      const mostFrequent = getMostFrequentEstimation(estimations);
-      setMostFrequentEstimation(mostFrequent);
+      const consensus = calculcateConsensus(estimations);
+      setConsensus(consensus);
     }
   }, [users]);
 
@@ -23,11 +23,11 @@ function EstimationSummary({ users }) {
     <div className="d-flex align-items-center justify-content-center">
       <div
         className={`poker-card d-flex flex-column align-items-center justify-content-center text-center p-3 position-relative ${
-          mostFrequentEstimation !== null ? "bg-lightgreen" : "bg-gray"
-        } ${mostFrequentEstimation === null ? "hidden-value" : ""}`}
+          consensus !== null ? "bg-lightgreen" : "bg-gray"
+        } ${consensus === null ? "hidden-value" : ""}`}
       >
         <div className="card-consensus">
-        {mostFrequentEstimation !== null ? (
+        {consensus !== null ? (
             <>Consensus</>
           ) : (
             <>Waiting for<br/>
@@ -35,8 +35,8 @@ function EstimationSummary({ users }) {
           )}
         </div>
         <div className="card-value">
-          {mostFrequentEstimation !== null ? (
-            valueToCardLabel[mostFrequentEstimation]?.label
+          {consensus !== null ? (
+            valueToCardLabel[consensus]?.label
           ) : (
             <>?</>
           )}
@@ -46,7 +46,7 @@ function EstimationSummary({ users }) {
   );
 }
 
-function getMostFrequentEstimation(estimations) {
+function calculcateConsensus(estimations) {
   const counts = estimations.reduce((acc, curr) => {
     acc[curr] = (acc[curr] || 0) + 1;
     return acc;
