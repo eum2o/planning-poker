@@ -20,7 +20,7 @@ Here is a typical procedure to use PPP during your agile ceremonies:
 1. Log into PPP with your team.
 2. Present a user story to estimate.
 3. Ask the team to vote on the story by selecting a card.
-4. Once everyone has voted, the most commonly selected card will be displayed.
+4. Once everyone has voted, the consensus estimation is displayed.
 5. Click "Reset All Estimations" to start the process again with a new user story.
 
 Happy estimating! 
