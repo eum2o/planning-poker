@@ -1,4 +1,4 @@
-name: Backend Tests
+name: Run Tests
 
 on:
   push:
@@ -26,3 +26,6 @@ jobs:
 
       - name: Run backend tests
         run: yarn test:backend
+
+      - name: Run frontend tests
+        run: yarn test
