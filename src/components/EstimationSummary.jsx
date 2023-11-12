@@ -47,19 +47,23 @@ function EstimationSummary({ users }) {
 
 
 export function calculateConsensus(estimations) {
-  // Calculate the average of estimations
   const sum = estimations.reduce((acc, val) => acc + parseInt(val, 10), 0);
   const average = sum / estimations.length;
 
-  // Iterate over valueToCardLabel
-  for (let key in valueToCardLabel) {
-    const numericKey = parseInt(key, 10);
-    if (numericKey >= average) {
-      return numericKey; // Return as Number
+  const sortedKeys = Object.keys(valueToCardLabel).map(key => parseInt(key, 10)).sort((a, b) => a - b);
+
+  let closestKey = sortedKeys[0];
+  let minDifference = Math.abs(average - closestKey);
+
+  for (let key of sortedKeys) {
+    const difference = Math.abs(average - key);
+    if (difference <= minDifference) {
+      minDifference = difference;
+      closestKey = key;
     }
   }
 
-  return null; // In case no suitable key is found
+  return closestKey;
 }
 
 

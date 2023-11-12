@@ -36,11 +36,17 @@ describe("calculateConsensus", () => {
   it("selects the nearest higher value for consensus between two widely spaced estimations", () => {
     const estimations = ["3", "8"];
     const result = calculateConsensus(estimations);
-    expect(result).toBe(8);
+    expect(result).toBe(5);
   });
 
   it("chooses the nearest higher consensus in an imbalanced set of estimations", () => {
     const estimations = ["21", "1", "1"];
+    const result = calculateConsensus(estimations);
+    expect(result).toBe(8);
+  });
+
+  it("selects the closest consensus value in a balanced set with repeated values", () => {
+    const estimations = ["5", "5", "5", "13", "13"];
     const result = calculateConsensus(estimations);
     expect(result).toBe(8);
   });
