@@ -24,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Run backend tests
+      - name: Run server tests
         run: yarn test:backend
 
-      - name: Run frontend tests
+      - name: Run react app tests
         run: yarn test
