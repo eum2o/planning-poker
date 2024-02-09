@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext, useCallback } from "react";
 import { SocketContext } from "./context/socket";
 import EstimationArea from "./components/EstimationArea";
 import LoginForm from "./components/LoginForm";
-import { NO_ESTIMATION } from "./cards";
+import { NO_ESTIMATION } from "./model/cardSpecs";
 import { FaGithub } from "react-icons/fa";
 
 // Use the session storage to persist the user name and estimation value when the page is refreshed.

@@ -1,5 +1,6 @@
-// don't use "-1" as this is used for "no estimation" in the server
-export const valueToCardLabel = {
+import { SPECIAL_CARD_VALUES } from "./cardSpecs";
+
+export const CARDS = {
   "0": {
     label: "0"
   },
@@ -24,18 +25,16 @@ export const valueToCardLabel = {
   "21": {
     label: "21"
   },
-  "-2": {
+  [SPECIAL_CARD_VALUES.CUT.value.toString()]: {
     label: "✂️",
     description: "Cut into smaller parts",
   },
-  "-3": {
+  [SPECIAL_CARD_VALUES.SHRUG.value.toString()]: {
     label: "🤷🏻",
     description: "Can't tell",
   },
-  "-4": {
+  [SPECIAL_CARD_VALUES.BREAK.value.toString()]: {
     label: "🍵",
     description: "Need a break",
   },
 };
-
-export const NO_ESTIMATION = -1;

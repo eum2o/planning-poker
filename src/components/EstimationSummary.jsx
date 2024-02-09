@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { valueToCardLabel, NO_ESTIMATION } from "../cards";
+import { NO_ESTIMATION } from "../model/cardSpecs";
+import { CARDS} from "../model/cards";
 import "./EstimationSummary.css";
+import { computeMedian} from "../util/consensusCalculation"
 
 function EstimationSummary({ users }) {
   const [concencus, setConcensus] = useState(null);
@@ -10,11 +12,13 @@ function EstimationSummary({ users }) {
       (user) => user.estimation !== NO_ESTIMATION
     );
 
-    if (!allEstimationsSubmitted) {
-      setConcensus(null);
+    const userEstimations = users.map((user) => parseInt(user.estimation));
+    let computeConsensus = allEstimationsSubmitted && userEstimations.length;
+
+    if (computeConsensus) {
+      setConcensus(computeMedian(userEstimations));
     } else {
-      const estimations = users.map((user) => user.estimation);
-      setConcensus(calculateConsensus(estimations));
+      setConcensus(null)
     }
   }, [users]);
 
@@ -35,7 +39,7 @@ function EstimationSummary({ users }) {
         </div>
         <div className="card-value">
           {concencus !== null ? (
-            valueToCardLabel[concencus]?.label
+            computeConsensusLabel(concencus)
           ) : (
             <>?</>
           )}
@@ -45,27 +49,13 @@ function EstimationSummary({ users }) {
   );
 }
 
-
-export function calculateConsensus(estimations) {
-  const sum = estimations.reduce((acc, val) => acc + parseInt(val, 10), 0);
-  const average = sum / estimations.length;
-
-  const sortedKeys = Object.keys(valueToCardLabel).map(key => parseInt(key, 10)).sort((a, b) => a - b);
-
-  let closestKey = sortedKeys[0];
-  let minDifference = Math.abs(average - closestKey);
-
-  for (let key of sortedKeys) {
-    const difference = Math.abs(average - key);
-    if (difference <= minDifference) {
-      minDifference = difference;
-      closestKey = key;
-    }
+function computeConsensusLabel(consensus) {
+  const label = CARDS[consensus].label;
+  if (label) {
+    return label;
   }
-
-  return closestKey;
+  return consensus;
 }
 
-
-
 export default EstimationSummary;
+

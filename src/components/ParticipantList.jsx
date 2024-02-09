@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
-import { valueToCardLabel, NO_ESTIMATION } from "../cards";
+import { CARDS } from "../model/cards";
+import { NO_ESTIMATION } from "../model/cardSpecs";
 import "./ParticipantList.css";
 import { SocketContext } from "../context/socket";
 
@@ -34,7 +35,7 @@ function ParticipantList({ users }) {
             {user.socketId === socket.id || allEstimationsSubmitted ? (
               <td className="user-estimation">
                 {user.estimation !== -1 && (
-                  <b>{valueToCardLabel[user.estimation]?.label}</b>
+                  <b>{CARDS[user.estimation]?.label}</b>
                 )}
               </td>
             ) : (
