@@ -1,7 +1,8 @@
 import ParticipantList from "./ParticipantList";
 import ResetArea from "./ResetArea";
 import EstimationSummary from "./EstimationSummary";
-import { valueToCardLabel, NO_ESTIMATION } from "../cards";
+import { CARDS } from "../model/cards";
+import { NO_ESTIMATION } from "../model/cardSpecs";
 import "./EstimationArea.css";
 import { useContext } from "react";
 import { Tooltip } from "react-tooltip";
@@ -26,7 +27,7 @@ export default function EstimationArea({
         <div className="card-body">
           Good to see you {userName}, oh wise estimator. Now take your guess:
           <div className="estimation-buttons">
-            {Object.entries(valueToCardLabel).map(([key, value]) => (
+            {Object.entries(CARDS).map(([key, value]) => (
               <button
                 key={key}
                 onClick={() => handleEstimationSubmit(key)}
